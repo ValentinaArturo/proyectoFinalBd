@@ -24,9 +24,15 @@ class _LoginBodyDesktopState extends State<LoginBodyDesktop> {
   );
   bool ispasswordev = true;
   FormData? selected;
-
-  TextEditingController emailController = new TextEditingController();
-  TextEditingController passwordController = new TextEditingController();
+  String? dropdownValue = 'Selecciona un esquema';
+  List<String> items = [
+    'Selecciona un esquema',
+    '1',
+    '2',
+  ];
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController schemeController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +76,7 @@ class _LoginBodyDesktopState extends State<LoginBodyDesktop> {
                     const Color.fromARGB(255, 171, 211, 250).withOpacity(0.4),
                 child: Container(
                   width: 800,
-                  height: 500,
+                  height: 800,
                   padding: const EdgeInsets.all(
                     40.0,
                   ),
@@ -96,7 +102,7 @@ class _LoginBodyDesktopState extends State<LoginBodyDesktop> {
                       FadeAnimation(
                         delay: 1,
                         child: const Text(
-                          "Please sign in to continue",
+                          "Ingrese los datos para continuar",
                           style: TextStyle(
                             color: Colors.white,
                             letterSpacing: 0.5,
@@ -130,16 +136,17 @@ class _LoginBodyDesktopState extends State<LoginBodyDesktop> {
                               });
                             },
                             decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.only(bottom: 10),
                               enabledBorder: InputBorder.none,
                               border: InputBorder.none,
                               prefixIcon: Icon(
-                                Icons.email_outlined,
+                                Icons.person,
                                 color: selected == FormData.Email
                                     ? enabledtxt
                                     : deaible,
                                 size: 20,
                               ),
-                              hintText: 'Email',
+                              hintText: 'Usuario',
                               hintStyle: TextStyle(
                                 color: selected == FormData.Email
                                     ? enabledtxt
@@ -184,6 +191,8 @@ class _LoginBodyDesktopState extends State<LoginBodyDesktop> {
                               });
                             },
                             decoration: InputDecoration(
+                                contentPadding:
+                                    const EdgeInsets.only(bottom: 10),
                                 enabledBorder: InputBorder.none,
                                 border: InputBorder.none,
                                 prefixIcon: Icon(
@@ -212,7 +221,7 @@ class _LoginBodyDesktopState extends State<LoginBodyDesktop> {
                                   onPressed: () => setState(
                                       () => ispasswordev = !ispasswordev),
                                 ),
-                                hintText: 'Password',
+                                hintText: 'Contraseña',
                                 hintStyle: TextStyle(
                                     color: selected == FormData.password
                                         ? enabledtxt
@@ -226,6 +235,87 @@ class _LoginBodyDesktopState extends State<LoginBodyDesktop> {
                                     : deaible,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 12),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      FadeAnimation(
+                        delay: 1,
+                        child: Container(
+                          width: 300,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(
+                              12.0,
+                            ),
+                            color: selected == FormData.scheme
+                                ? enabled
+                                : backgroundColor,
+                          ),
+                          padding: const EdgeInsets.all(
+                            5.0,
+                          ),
+                          child: TextField(
+                            controller: schemeController,
+                            onTap: () {
+                              setState(() {
+                                selected = FormData.scheme;
+                              });
+                            },
+                            decoration: InputDecoration(
+                              enabledBorder: InputBorder.none,
+                              border: InputBorder.none,
+                              prefixIcon: Icon(
+                                Icons.format_align_center,
+                                color: selected == FormData.Email
+                                    ? enabledtxt
+                                    : deaible,
+                                size: 20,
+                              ),
+                              suffixIcon: Theme(
+                                data: Theme.of(context).copyWith(
+                                  canvasColor: backgroundColor,
+                                ),
+                                child: DropdownButtonHideUnderline(
+                                  child: DropdownButton(
+                                    isExpanded: true,
+                                    value: dropdownValue,
+                                    onChanged: (newValue) {
+                                      setState(() {
+                                        dropdownValue = newValue;
+                                      });
+                                    },
+                                    items: items.map<DropdownMenuItem<String>>(
+                                        (String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Container(
+                                          margin: EdgeInsets.only(left: 35),
+                                          child: Text(
+                                            value,
+                                            style: TextStyle(
+                                              color: selected == FormData.scheme
+                                                  ? enabledtxt
+                                                  : deaible,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 12,
+                                            ),
+                                          ),
+                                        ),
+                                        onTap: (){
+                                          setState(() {
+                                            selected = FormData.scheme;
+                                          });
+                                        }
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                              ),
+
+                            ),
                           ),
                         ),
                       ),

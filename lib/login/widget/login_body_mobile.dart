@@ -17,9 +17,15 @@ class _LoginBodyMobileState extends State<LoginBodyMobile> {
   Color backgroundColor = const Color(0xFF1F1A30);
   bool ispasswordev = true;
   FormData? selected;
-
-  TextEditingController emailController = new TextEditingController();
-  TextEditingController passwordController = new TextEditingController();
+  String? dropdownValue = 'Selecciona un esquema';
+  List<String> items = [
+    'Selecciona un esquema',
+    '1',
+    '2',
+  ];
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController schemeController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -77,9 +83,11 @@ class _LoginBodyMobileState extends State<LoginBodyMobile> {
                       FadeAnimation(
                         delay: 1,
                         child: const Text(
-                          "Please sign in to continue",
+                          "Ingresa los datos para continuar",
                           style: TextStyle(
-                              color: Colors.white, letterSpacing: 0.5),
+                            color: Colors.white,
+                            letterSpacing: 0.5,
+                          ),
                         ),
                       ),
                       const SizedBox(
@@ -107,27 +115,30 @@ class _LoginBodyMobileState extends State<LoginBodyMobile> {
                             decoration: InputDecoration(
                               enabledBorder: InputBorder.none,
                               border: InputBorder.none,
+                              contentPadding: const EdgeInsets.only(bottom: 10),
                               prefixIcon: Icon(
-                                Icons.email_outlined,
+                                Icons.person,
                                 color: selected == FormData.Email
                                     ? enabledtxt
                                     : deaible,
                                 size: 20,
                               ),
-                              hintText: 'Email',
+                              hintText: 'Usuario',
                               hintStyle: TextStyle(
-                                  color: selected == FormData.Email
-                                      ? enabledtxt
-                                      : deaible,
-                                  fontSize: 12),
-                            ),
-                            textAlignVertical: TextAlignVertical.center,
-                            style: TextStyle(
                                 color: selected == FormData.Email
                                     ? enabledtxt
                                     : deaible,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 12),
+                                fontSize: 12,
+                              ),
+                            ),
+                            textAlignVertical: TextAlignVertical.center,
+                            style: TextStyle(
+                              color: selected == FormData.Email
+                                  ? enabledtxt
+                                  : deaible,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
                           ),
                         ),
                       ),
@@ -153,6 +164,8 @@ class _LoginBodyMobileState extends State<LoginBodyMobile> {
                               });
                             },
                             decoration: InputDecoration(
+                                contentPadding:
+                                    const EdgeInsets.only(bottom: 10),
                                 enabledBorder: InputBorder.none,
                                 border: InputBorder.none,
                                 prefixIcon: Icon(
@@ -181,7 +194,7 @@ class _LoginBodyMobileState extends State<LoginBodyMobile> {
                                   onPressed: () => setState(
                                       () => ispasswordev = !ispasswordev),
                                 ),
-                                hintText: 'Password',
+                                hintText: 'Contraseña',
                                 hintStyle: TextStyle(
                                     color: selected == FormData.password
                                         ? enabledtxt
@@ -190,11 +203,93 @@ class _LoginBodyMobileState extends State<LoginBodyMobile> {
                             obscureText: ispasswordev,
                             textAlignVertical: TextAlignVertical.center,
                             style: TextStyle(
-                                color: selected == FormData.password
+                              color: selected == FormData.password
+                                  ? enabledtxt
+                                  : deaible,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      FadeAnimation(
+                        delay: 1,
+                        child: Container(
+                          width: 300,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(
+                              12.0,
+                            ),
+                            color: selected == FormData.scheme
+                                ? enabled
+                                : backgroundColor,
+                          ),
+                          padding: const EdgeInsets.all(
+                            5.0,
+                          ),
+                          child: TextField(
+                            controller: schemeController,
+                            onTap: () {
+                              setState(() {
+                                selected = FormData.scheme;
+                              });
+                            },
+                            decoration: InputDecoration(
+                              suffixIcon: Theme(
+                                data: Theme.of(context).copyWith(
+                                  canvasColor: backgroundColor,
+                                ),
+                                child: DropdownButtonHideUnderline(
+                                  child: DropdownButton(
+                                    isExpanded: true,
+                                    value: dropdownValue,
+                                    onChanged: (newValue) {
+                                      setState(() {
+                                        dropdownValue = newValue;
+                                      });
+                                    },
+                                    items: items.map<DropdownMenuItem<String>>(
+                                        (String value) {
+                                      return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Container(
+                                            margin: EdgeInsets.only(left: 35),
+                                            child: Text(
+                                              value,
+                                              style: TextStyle(
+                                                color:
+                                                    selected == FormData.scheme
+                                                        ? enabledtxt
+                                                        : deaible,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                          ),
+                                          onTap: () {
+                                            setState(() {
+                                              selected = FormData.scheme;
+                                            });
+                                          });
+                                    }).toList(),
+                                  ),
+                                ),
+                              ),
+                              contentPadding: const EdgeInsets.only(bottom: 10),
+                              enabledBorder: InputBorder.none,
+                              border: InputBorder.none,
+                              prefixIcon: Icon(
+                                Icons.format_align_center,
+                                color: selected == FormData.scheme
                                     ? enabledtxt
                                     : deaible,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 12),
+                                size: 20,
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -204,29 +299,35 @@ class _LoginBodyMobileState extends State<LoginBodyMobile> {
                       FadeAnimation(
                         delay: 1,
                         child: TextButton(
-                            onPressed: () {
-                              // Navigator.pop(context);
-                              // Navigator.of(context)
-                              //     .push(MaterialPageRoute(builder: (context) {
-                              //   return MyApp(isLogin: true);
-                              // }));
-                            },
-                            child: Text(
-                              "Login",
-                              style: TextStyle(
-                                color: Colors.white,
-                                letterSpacing: 0.5,
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.bold,
+                          onPressed: () {
+                            // Navigator.pop(context);
+                            // Navigator.of(context)
+                            //     .push(MaterialPageRoute(builder: (context) {
+                            //   return MyApp(isLogin: true);
+                            // }));
+                          },
+                          style: TextButton.styleFrom(
+                            backgroundColor: const Color(0xFF2697FF),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 14.0,
+                              horizontal: 80,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                12.0,
                               ),
                             ),
-                            style: TextButton.styleFrom(
-                                backgroundColor: Color(0xFF2697FF),
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 14.0, horizontal: 80),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.circular(12.0)))),
+                          ),
+                          child: const Text(
+                            "Login",
+                            style: TextStyle(
+                              color: Colors.white,
+                              letterSpacing: 0.5,
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),
