@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:proyecto_final_bd/login/login_page.dart';
+import 'package:proyecto_final_bd/routes/landing_routes.dart';
+import 'package:proyecto_final_bd/routes/landing_routes_constants.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,12 +14,25 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Proyecto final',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
+      theme: ThemeData(),
+      initialRoute: loginRoute,
+      onGenerateRoute: LandingRoutes.generateRouteLanding,
+      builder: (context, child) => HomePage(key: key, child: child),
+    );
+  }
+}
 
-      ),
-      home: const LoginPage(),
+class HomePage extends StatelessWidget {
+  final Widget? child;
+
+  const HomePage({required Key? key, required this.child}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: child,
     );
   }
 }
