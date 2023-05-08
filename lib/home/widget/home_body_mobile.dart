@@ -59,20 +59,20 @@ class _HomeBodyMobileState extends State<HomeBodyMobile> {
                       child: ListView(
                         children: [
                           Container(
-                            alignment:Alignment.topRight,
+                            alignment: Alignment.topRight,
                             child: GestureDetector(
                               onTap: () {
                                 setState(() {
                                   isOpen = false;
                                 });
                               },
-                              child: Icon(
+                              child: const Icon(
                                 Icons.close,
                                 color: Colors.white,
                               ),
                             ),
                           ),
-                          ExpansionTile(
+                          const ExpansionTile(
                             title: Text(
                               "Tabla 1",
                               style: TextStyle(
@@ -86,7 +86,7 @@ class _HomeBodyMobileState extends State<HomeBodyMobile> {
                               Text("children 2")
                             ],
                           ),
-                          ExpansionTile(
+                          const ExpansionTile(
                             title: Text(
                               "Tabla 2",
                               style: TextStyle(
@@ -100,7 +100,7 @@ class _HomeBodyMobileState extends State<HomeBodyMobile> {
                               Text("children 2")
                             ],
                           ),
-                          ExpansionTile(
+                          const ExpansionTile(
                             title: Text(
                               "Tabla 3",
                               style: TextStyle(
@@ -123,7 +123,7 @@ class _HomeBodyMobileState extends State<HomeBodyMobile> {
                           isOpen = true;
                         });
                       },
-                      child: Icon(
+                      child: const Icon(
                         Icons.menu,
                         color: Colors.white,
                       ),
