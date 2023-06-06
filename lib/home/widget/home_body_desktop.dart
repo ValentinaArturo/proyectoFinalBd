@@ -1,6 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:json_table/json_table.dart';
 import 'package:proyecto_final_bd/common/animation/fade_animation.dart';
-import 'package:proyecto_final_bd/resources/colors.dart';
+import 'package:proyecto_final_bd/common/bloc/base_state.dart';
+import 'package:proyecto_final_bd/common/bloc/mixin/error_handling.dart';
+import 'package:proyecto_final_bd/home/bloc/home_bloc.dart';
+import 'package:proyecto_final_bd/home/bloc/home_event.dart';
+import 'package:proyecto_final_bd/home/bloc/home_state.dart';
 
 class HomeBodyDesktop extends StatefulWidget {
   const HomeBodyDesktop({Key? key}) : super(key: key);
@@ -9,278 +17,242 @@ class HomeBodyDesktop extends StatefulWidget {
   State<HomeBodyDesktop> createState() => _HomeBodyDesktopState();
 }
 
-class _HomeBodyDesktopState extends State<HomeBodyDesktop> {
+class _HomeBodyDesktopState extends State<HomeBodyDesktop> with ErrorHandling {
   Color backgroundColor = const Color(
-    0xFF1F1A30,
+    0xFF003F5D,
   );
   TextEditingController commandController = TextEditingController();
+  late HomeBloc _homeBloc;
+  List<dynamic> json = [];
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _homeBloc = context.read<HomeBloc>();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              stops: const [
-                0.1,
-                0.4,
-                0.7,
-                0.9,
-              ],
-              colors: [
-                purple.withOpacity(0.8),
-                purple,
-                blue,
-                blue,
-              ],
-            ),
-            image: DecorationImage(
-              fit: BoxFit.cover,
-              colorFilter: ColorFilter.mode(
-                grey.withOpacity(0.2),
-                BlendMode.dstATop,
-              ),
-              image: const NetworkImage(
-                'https://mir-s3-cdn-cf.behance.net/project_modules/fs/01b4bd84253993.5d56acc35e143.jpg',
+    return BlocListener<HomeBloc, BaseState>(
+      listener: (
+        context,
+        state,
+      ) async {
+        verifyServerError(state);
+        if (state is HomeSuccess) {
+          setState(() {
+            json = state.json;
+          });
+        }
+      },
+      child: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/waves_home.png'),
+                fit: BoxFit.fill,
               ),
             ),
-          ),
-          child: Row(
-            children: [
-              Drawer(
-                backgroundColor: Colors.transparent,
-                child: ListView(
-                  children: [
-                    ExpansionTile(
-                      title: Text(
-                        "Tabla 1",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                        ),
-                      ),
-                      children: <Widget>[
-                        Text("children 1"),
-                        Text("children 2")
-                      ],
-                    ),
-                    ExpansionTile(
-                      title: Text(
-                        "Tabla 2",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                        ),
-                      ),
-                      children: <Widget>[
-                        Text("children 1"),
-                        Text("children 2")
-                      ],
-                    ),
-                    ExpansionTile(
-                      title: Text(
-                        "Tabla 3",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                        ),
-                      ),
-                      children: <Widget>[
-                        Text("children 1"),
-                        Text("children 2")
-                      ],
-                    )
-                  ],
-                ),
-              ),
-              Column(
-                children: [
-                  FadeAnimation(
-                    delay: 1,
-                    child: Container(
-                      width: MediaQuery.of(context).size.width * 0.7,
-                      height: MediaQuery.of(context).size.height * 0.4,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(
-                          20.0,
-                        ),
-                        color: Colors.transparent,
-                      ),
-                      padding: const EdgeInsets.all(
-                        5.0,
-                      ),
-                      child: TextField(
-                        controller: commandController,
-                        keyboardType: TextInputType.multiline,
-                        maxLines: null,
-                        decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.only(bottom: 10),
-                          enabledBorder: InputBorder.none,
-                          border: InputBorder.none,
-                          hintText: 'Escribe aqui.......',
-                          hintStyle: TextStyle(
+            child: Row(
+              children: [
+                Drawer(
+                  backgroundColor: Colors.transparent,
+                  child: ListView(
+                    children: const [
+                      ExpansionTile(
+                        title: Text(
+                          "Tabla 1",
+                          style: TextStyle(
                             color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
+                        ),
+                        children: <Widget>[
+                          Text("children 1"),
+                          Text("children 2")
+                        ],
+                      ),
+                      ExpansionTile(
+                        title: Text(
+                          "Tabla 2",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
+                        ),
+                        children: <Widget>[
+                          Text("children 1"),
+                          Text("children 2")
+                        ],
+                      ),
+                      ExpansionTile(
+                        title: Text(
+                          "Tabla 3",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
+                        ),
+                        children: <Widget>[
+                          Text("children 1"),
+                          Text("children 2")
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+                Column(
+                  children: [
+                    FadeAnimation(
+                      delay: 1,
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.7,
+                        height: MediaQuery.of(context).size.height * 0.4,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(
+                            20.0,
+                          ),
+                          color: Colors.grey.withOpacity(0.3),
+                        ),
+                        padding: const EdgeInsets.all(
+                          5.0,
+                        ),
+                        child: TextField(
+                          controller: commandController,
+                          keyboardType: TextInputType.multiline,
+                          maxLines: null,
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.only(
+                              bottom: 10,
+                            ),
+                            enabledBorder: InputBorder.none,
+                            border: InputBorder.none,
+                            hintText: 'Escribe aqui.......',
+                            hintStyle: const TextStyle(
+                              color: Colors.indigo,
+                              fontSize: 25,
+                            ),
+                            suffixIcon: GestureDetector(
+                              child: const Icon(
+                                Icons.flash_on,
+                                color: Colors.indigo,
+                              ),
+                              onTap: () {
+                                _homeBloc.add(
+                                  Result(
+                                    commandController.text,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                          style: const TextStyle(
+                            color: Colors.indigo,
+                            fontWeight: FontWeight.bold,
                             fontSize: 25,
                           ),
                         ),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 25,
+                      ),
+                    ),
+                    FadeAnimation(
+                      delay: 1,
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.7,
+                        height: MediaQuery.of(context).size.height * 0.6,
+                        color: Colors.white.withOpacity(0.7),
+                        padding: const EdgeInsets.all(
+                          5.0,
                         ),
+                        child: json.isEmpty ? Container() : _jsonTable(json),
                       ),
                     ),
-                  ),
-                  FadeAnimation(
-                    delay: 1,
-                    child: Container(
-                      width: MediaQuery.of(context).size.width * 0.7,
-                      height: MediaQuery.of(context).size.height * 0.4,
-                      padding: const EdgeInsets.all(
-                        5.0,
-                      ),
-                      child: DataTable(
-                        columns: const <DataColumn>[
-                          DataColumn(
-                            label: Expanded(
-                              child: Text(
-                                'Name',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                ),
-                              ),
-                            ),
-                          ),
-                          DataColumn(
-                            label: Expanded(
-                              child: Text(
-                                'Age',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                ),
-                              ),
-                            ),
-                          ),
-                          DataColumn(
-                            label: Expanded(
-                              child: Text(
-                                'Role',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                        rows: const <DataRow>[
-                          DataRow(
-                            cells: <DataCell>[
-                              DataCell(
-                                Text(
-                                  'Sarah',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w200,
-                                    fontSize: 20,
-                                  ),
-                                ),
-                              ),
-                              DataCell(Text(
-                                '19',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w200,
-                                  fontSize: 20,
-                                ),
-                              )),
-                              DataCell(Text(
-                                'Student',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w200,
-                                  fontSize: 20,
-                                ),
-                              )),
-                            ],
-                          ),
-                          DataRow(
-                            cells: <DataCell>[
-                              DataCell(Text(
-                                'Janine',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w200,
-                                  fontSize: 20,
-                                ),
-                              )),
-                              DataCell(Text(
-                                '43',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w200,
-                                  fontSize: 20,
-                                ),
-                              )),
-                              DataCell(Text(
-                                'Professor',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w200,
-                                  fontSize: 20,
-                                ),
-                              )),
-                            ],
-                          ),
-                          DataRow(
-                            cells: <DataCell>[
-                              DataCell(Text(
-                                'William',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w200,
-                                  fontSize: 20,
-                                ),
-                              )),
-                              DataCell(Text(
-                                '27',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w200,
-                                  fontSize: 20,
-                                ),
-                              )),
-                              DataCell(Text(
-                                'Associate Professor',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w200,
-                                  fontSize: 20,
-                                ),
-                              )),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
+          BlocBuilder<HomeBloc, BaseState>(
+            builder: (context, state) {
+              if (state is HomeInProgress) {
+                return const Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.indigo,
+                  ),
+                );
+              } else if (state is HomeError) {
+                setState(() {});
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        state.error,
+                      ),
+                    ),
+                  );
+                });
+              }
+              return Container();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _jsonTable(
+    var json,
+  ) {
+    return JsonTable(
+      json,
+      tableHeaderBuilder: (String? header) {
+        return Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 8.0,
+            vertical: 4.0,
+          ),
+          decoration: BoxDecoration(
+            border: Border.all(width: 0.5),
+            color: Colors.indigo[900],
+          ),
+          child: Text(
+            header!,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontWeight: FontWeight.w700,
+              fontSize: 20.0,
+              color: Colors.white,
+            ),
+          ),
+        );
+      },
+      tableCellBuilder: (value) {
+        return Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 4.0,
+            vertical: 2.0,
+          ),
+          decoration: BoxDecoration(
+            border: Border.all(
+              width: 0.5,
+              color: Colors.grey.withOpacity(
+                0.5,
+              ),
+            ),
+          ),
+          child: Text(
+            value,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontSize: 18.0,
+                color: Colors.grey[900],
+                fontWeight: FontWeight.bold),
+          ),
+        );
+      },
     );
   }
 }
