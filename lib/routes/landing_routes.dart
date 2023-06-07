@@ -9,17 +9,17 @@ class LandingRoutes {
     switch (settings.name) {
       case rootRoute:
         return GeneratePageRoute(
-          widget: LoginPage(),
+          widget: const LoginPage(),
           routeName: settings.name!,
         );
       case loginRoute:
         return GeneratePageRoute(
-          widget: LoginPage(),
+          widget: const LoginPage(),
           routeName: settings.name!,
         );
       case homeRoute:
         return GeneratePageRoute(
-          widget: HomePage(),
+          widget: const HomePage(),
           routeName: settings.name!,
         );
       default:

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:json_table/json_table.dart';
@@ -11,7 +9,10 @@ import 'package:proyecto_final_bd/home/bloc/home_event.dart';
 import 'package:proyecto_final_bd/home/bloc/home_state.dart';
 
 class HomeBodyDesktop extends StatefulWidget {
-  const HomeBodyDesktop({Key? key}) : super(key: key);
+
+  const HomeBodyDesktop({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<HomeBodyDesktop> createState() => _HomeBodyDesktopState();
@@ -41,6 +42,7 @@ class _HomeBodyDesktopState extends State<HomeBodyDesktop> with ErrorHandling {
         verifyServerError(state);
         if (state is HomeSuccess) {
           setState(() {
+            json = [];
             json = state.json;
           });
         }
@@ -58,51 +60,26 @@ class _HomeBodyDesktopState extends State<HomeBodyDesktop> with ErrorHandling {
               children: [
                 Drawer(
                   backgroundColor: Colors.transparent,
-                  child: ListView(
-                    children: const [
-                      ExpansionTile(
-                        title: Text(
-                          "Tabla 1",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                          ),
-                        ),
-                        children: <Widget>[
-                          Text("children 1"),
-                          Text("children 2")
-                        ],
-                      ),
-                      ExpansionTile(
-                        title: Text(
-                          "Tabla 2",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                          ),
-                        ),
-                        children: <Widget>[
-                          Text("children 1"),
-                          Text("children 2")
-                        ],
-                      ),
-                      ExpansionTile(
-                        title: Text(
-                          "Tabla 3",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                          ),
-                        ),
-                        children: <Widget>[
-                          Text("children 1"),
-                          Text("children 2")
-                        ],
-                      )
-                    ],
+                  child: ListView.builder(
+                    itemBuilder: (BuildContext context, int index) {
+                      return
+                    },
+                    // children: const [
+                    //   ExpansionTile(
+                    //     title: Text(
+                    //       "Tabla 1",
+                    //       style: TextStyle(
+                    //         color: Colors.white,
+                    //         fontWeight: FontWeight.bold,
+                    //         fontSize: 20,
+                    //       ),
+                    //     ),
+                    //     children: <Widget>[
+                    //       Text("children 1"),
+                    //       Text("children 2")
+                    //     ],
+                    //   ),
+                    // ],
                   ),
                 ),
                 Column(
@@ -142,9 +119,12 @@ class _HomeBodyDesktopState extends State<HomeBodyDesktop> with ErrorHandling {
                                 color: Colors.indigo,
                               ),
                               onTap: () {
+                                setState(() {
+                                  json.clear();
+                                });
                                 _homeBloc.add(
                                   Result(
-                                    commandController.text,
+                                    query: commandController.text,
                                   ),
                                 );
                               },
@@ -184,7 +164,6 @@ class _HomeBodyDesktopState extends State<HomeBodyDesktop> with ErrorHandling {
                   ),
                 );
               } else if (state is HomeError) {
-                setState(() {});
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
@@ -255,4 +234,6 @@ class _HomeBodyDesktopState extends State<HomeBodyDesktop> with ErrorHandling {
       },
     );
   }
+
+  _getItem(){}
 }

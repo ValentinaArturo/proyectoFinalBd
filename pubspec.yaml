@@ -37,6 +37,7 @@ dependencies:
   simple_animations: ^4.1.0
   supercharged: ^2.1.1
   json_table: ^2.0.1
+  flutter_secure_storage: ^7.0.1
 
   flutter:
     sdk: flutter

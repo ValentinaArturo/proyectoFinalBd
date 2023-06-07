@@ -8,7 +8,10 @@ import 'package:proyecto_final_bd/home/bloc/home_event.dart';
 import 'package:proyecto_final_bd/home/bloc/home_state.dart';
 
 class HomeBodyMobile extends StatefulWidget {
-  const HomeBodyMobile({Key? key}) : super(key: key);
+
+  const HomeBodyMobile({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<HomeBodyMobile> createState() => _HomeBodyMobileState();
@@ -21,9 +24,7 @@ class _HomeBodyMobileState extends State<HomeBodyMobile> with ErrorHandling {
   TextEditingController commandController = TextEditingController();
   bool isOpen = false;
   late HomeBloc _homeBloc;
-  List<dynamic> json =[];
-
-
+  List<dynamic> json = [];
 
   @override
   void didChangeDependencies() {
@@ -155,19 +156,14 @@ class _HomeBodyMobileState extends State<HomeBodyMobile> with ErrorHandling {
                           controller: commandController,
                           keyboardType: TextInputType.multiline,
                           maxLines: null,
-                          onSubmitted: (text) {
-                            _homeBloc.add(
-                              Result(
-                                commandController.text,
-                              ),
-                            );
-                          },
                           decoration: InputDecoration(
-                            contentPadding: EdgeInsets.only(bottom: 10),
+                            contentPadding: const EdgeInsets.only(
+                              bottom: 10,
+                            ),
                             enabledBorder: InputBorder.none,
                             border: InputBorder.none,
                             hintText: 'Escribe aqui.......',
-                            hintStyle: TextStyle(
+                            hintStyle: const TextStyle(
                               color: Colors.indigo,
                               fontSize: 25,
                             ),
@@ -177,9 +173,13 @@ class _HomeBodyMobileState extends State<HomeBodyMobile> with ErrorHandling {
                                 color: Colors.indigo,
                               ),
                               onTap: () {
+                                setState(() {
+                                  json.clear();
+                                });
                                 _homeBloc.add(
                                   Result(
-                                    commandController.text,
+                                    query: commandController.text,
+
                                   ),
                                 );
                               },
@@ -346,7 +346,7 @@ class _HomeBodyMobileState extends State<HomeBodyMobile> with ErrorHandling {
                 return const CircularProgressIndicator();
               } else if (state is HomeError) {
                 WidgetsBinding.instance.addPostFrameCallback(
-                      (_) => ScaffoldMessenger.of(context).showSnackBar(
+                  (_) => ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
                         state.error,

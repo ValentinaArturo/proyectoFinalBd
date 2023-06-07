@@ -24,4 +24,17 @@ class LoginService {
       },
     );
   }
+
+  Future<Response> getSchemes({
+    final String? name,
+    final String? password,
+  }) {
+    return client.post(
+      schemePath,
+      data: {
+        "username": name,
+        "password": password,
+      },
+    );
+  }
 }

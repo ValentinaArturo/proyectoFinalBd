@@ -18,3 +18,10 @@ class LoginError extends LoginState {
 
   const LoginError(this.error);
 }
+
+class SchemeListSuccess extends LoginState {
+  final List<String> schemes;
+
+  const SchemeListSuccess(this.schemes);
+}
+class SchemeListProgress extends LoginState {}

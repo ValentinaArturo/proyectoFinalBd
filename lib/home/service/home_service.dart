@@ -12,14 +12,17 @@ class HomeService {
 
   Future<Response> getResults({
     final String? query,
+    final String? name,
+    final String? password,
+    final String? database,
   }) {
     return client.post(
       queryManagerPath,
       data: {
         'query': query,
-        "username": "root",
-        "password": "root",
-        "database": "sakila"
+        "username": name,
+        "password": password,
+        "database": database,
       },
     );
   }

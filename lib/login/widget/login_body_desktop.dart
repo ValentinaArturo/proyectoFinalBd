@@ -10,7 +10,9 @@ import 'package:proyecto_final_bd/login/enum/form_data.dart';
 import 'package:proyecto_final_bd/routes/landing_routes_constants.dart';
 
 class LoginBodyDesktop extends StatefulWidget {
-  const LoginBodyDesktop({Key? key}) : super(key: key);
+  const LoginBodyDesktop({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<LoginBodyDesktop> createState() => _LoginBodyDesktopState();
@@ -42,8 +44,6 @@ class _LoginBodyDesktopState extends State<LoginBodyDesktop>
   String? dropdownValue = 'Selecciona un esquema';
   List<String> items = [
     'Selecciona un esquema',
-    'sakila',
-    '2',
   ];
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -62,6 +62,10 @@ class _LoginBodyDesktopState extends State<LoginBodyDesktop>
             context,
             homeRoute,
           );
+        } else if (state is SchemeListSuccess) {
+          setState(() {
+            items.addAll(state.schemes);
+          });
         }
       },
       child: Stack(
@@ -182,12 +186,13 @@ class _LoginBodyDesktopState extends State<LoginBodyDesktop>
                                 width: 300,
                                 height: 40,
                                 decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(
-                                      12.0,
-                                    ),
-                                    color: selected == FormData.password
-                                        ? enabled
-                                        : backgroundColor),
+                                  borderRadius: BorderRadius.circular(
+                                    12.0,
+                                  ),
+                                  color: selected == FormData.password
+                                      ? enabled
+                                      : backgroundColor,
+                                ),
                                 padding: const EdgeInsets.all(
                                   5.0,
                                 ),
@@ -197,6 +202,14 @@ class _LoginBodyDesktopState extends State<LoginBodyDesktop>
                                     setState(() {
                                       selected = FormData.password;
                                     });
+                                  },
+                                  onChanged: (value) {
+                                    _loginBloc.add(
+                                      SchemeList(
+                                        user: nameController.text,
+                                        password: passwordController.text,
+                                      ),
+                                    );
                                   },
                                   decoration: InputDecoration(
                                       contentPadding:
@@ -240,11 +253,12 @@ class _LoginBodyDesktopState extends State<LoginBodyDesktop>
                                   obscureText: ispasswordev,
                                   textAlignVertical: TextAlignVertical.center,
                                   style: TextStyle(
-                                      color: selected == FormData.password
-                                          ? enabledtxt
-                                          : deaible,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12),
+                                    color: selected == FormData.password
+                                        ? enabledtxt
+                                        : deaible,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12,
+                                  ),
                                 ),
                               ),
                             ),
@@ -336,47 +350,48 @@ class _LoginBodyDesktopState extends State<LoginBodyDesktop>
                             const SizedBox(
                               height: 20,
                             ),
-                            FadeAnimation(
-                              delay: 1,
-                              child: TextButton(
-                                onPressed: () {
-                                  _loginBloc.add(
-                                    Login(
-                                      user: nameController.text,
-                                      database: dropdownValue!,
-                                      password: passwordController.text,
+
+                              FadeAnimation(
+                                delay: 1,
+                                child: TextButton(
+                                  onPressed: () {
+                                    _loginBloc.add(
+                                      Login(
+                                        user: nameController.text,
+                                        database: dropdownValue!,
+                                        password: passwordController.text,
+                                      ),
+                                    );
+                                    // Navigator.pushNamed(
+                                    //   context,
+                                    //   homeRoute,
+                                    // );
+                                  },
+                                  style: TextButton.styleFrom(
+                                    backgroundColor: const Color(
+                                      0xFF2697FF,
                                     ),
-                                  );
-                                  // Navigator.pushNamed(
-                                  //   context,
-                                  //   homeRoute,
-                                  // );
-                                },
-                                style: TextButton.styleFrom(
-                                  backgroundColor: const Color(
-                                    0xFF2697FF,
-                                  ),
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 14.0,
-                                    horizontal: 80,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(
-                                      12.0,
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 14.0,
+                                      horizontal: 80,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                        12.0,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                child: const Text(
-                                  "Login",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    letterSpacing: 0.5,
-                                    fontSize: 16.0,
-                                    fontWeight: FontWeight.bold,
+                                  child: const Text(
+                                    "Login",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      letterSpacing: 0.5,
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
                           ],
                         ),
                       ),

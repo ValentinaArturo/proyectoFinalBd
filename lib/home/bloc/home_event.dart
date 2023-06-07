@@ -10,5 +10,9 @@ abstract class HomeEvent extends Equatable {
 class Result extends HomeEvent {
   final String query;
 
-  const Result(this.query);
+
+  const Result({
+    required this.query,
+
+  });
 }

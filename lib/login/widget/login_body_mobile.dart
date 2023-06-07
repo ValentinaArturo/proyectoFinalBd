@@ -10,7 +10,9 @@ import 'package:proyecto_final_bd/login/enum/form_data.dart';
 import 'package:proyecto_final_bd/routes/landing_routes_constants.dart';
 
 class LoginBodyMobile extends StatefulWidget {
-  const LoginBodyMobile({Key? key}) : super(key: key);
+  const LoginBodyMobile({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<LoginBodyMobile> createState() => _LoginBodyMobileState();
@@ -34,8 +36,6 @@ class _LoginBodyMobileState extends State<LoginBodyMobile> with ErrorHandling {
   String? dropdownValue = 'Selecciona un esquema';
   List<String> items = [
     'Selecciona un esquema',
-    'sakila',
-    '2',
   ];
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -53,7 +53,12 @@ class _LoginBodyMobileState extends State<LoginBodyMobile> with ErrorHandling {
           Navigator.pushNamed(
             context,
             homeRoute,
+
           );
+        } else if (state is SchemeListSuccess) {
+          setState(() {
+            items.addAll(state.schemes);
+          });
         }
       },
       child: Stack(
@@ -176,6 +181,14 @@ class _LoginBodyMobileState extends State<LoginBodyMobile> with ErrorHandling {
                                     setState(() {
                                       selected = FormData.password;
                                     });
+                                  },
+                                  onChanged: (value) {
+                                    _loginBloc.add(
+                                      SchemeList(
+                                        user: nameController.text,
+                                        password: passwordController.text,
+                                      ),
+                                    );
                                   },
                                   decoration: InputDecoration(
                                       contentPadding:
@@ -376,7 +389,7 @@ class _LoginBodyMobileState extends State<LoginBodyMobile> with ErrorHandling {
                 );
               } else if (state is LoginError) {
                 WidgetsBinding.instance.addPostFrameCallback(
-                      (_) => ScaffoldMessenger.of(context).showSnackBar(
+                  (_) => ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
                         state.error,

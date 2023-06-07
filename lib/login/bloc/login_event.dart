@@ -18,3 +18,13 @@ class Login extends LoginEvent {
     required this.database,
   });
 }
+
+class SchemeList extends LoginEvent {
+  final String user;
+  final String password;
+
+  const SchemeList({
+    required this.user,
+    required this.password,
+  });
+}
