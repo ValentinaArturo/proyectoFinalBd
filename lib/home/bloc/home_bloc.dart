@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:proyecto_final_bd/common/bloc/base_bloc.dart';
@@ -16,6 +18,9 @@ class HomeBloc extends BaseBloc<HomeEvent, BaseState> {
   }) : super(HomeInitial()) {
     on<Result>(
       getResult,
+    );
+    on<TableList>(
+      getTableList,
     );
   }
 
@@ -39,6 +44,10 @@ class HomeBloc extends BaseBloc<HomeEvent, BaseState> {
         database: scheme,
         name: name,
       );
+      print(
+        response.data.toString(),
+      );
+
       if (response.data['status'] == 200 && response.data['results'] != []) {
         emit(
           HomeSuccess(
@@ -52,6 +61,39 @@ class HomeBloc extends BaseBloc<HomeEvent, BaseState> {
           ),
         );
       }
+    } on DioError catch (dioError) {
+      handleNetworkError(
+        dioError,
+        emit,
+      );
+    }
+  }
+
+  Future<void> getTableList(
+    final TableList event,
+    Emitter<BaseState> emit,
+  ) async {
+    emit(
+      TableListInProgress(),
+    );
+    try {
+      final name = await repository.getName();
+      final password = await repository.getPassword();
+      final scheme = await repository.getScheme();
+
+      final Response response = await service.getTables(
+        password: password,
+        database: scheme,
+        name: name,
+      );
+
+      final jsonString = jsonEncode(response.data);
+      Map<String, dynamic> jsonMap = jsonDecode(jsonString);
+      emit(
+        TableListSuccess(
+          jsonMap,
+        ),
+      );
     } on DioError catch (dioError) {
       handleNetworkError(
         dioError,

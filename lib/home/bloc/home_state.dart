@@ -26,3 +26,14 @@ class HomeError extends HomeState {
     this.error,
   );
 }
+
+class TableListSuccess extends HomeState {
+  final Map<String,dynamic> tables;
+
+  const TableListSuccess(
+      this.tables,
+      );
+}
+
+class TableListInProgress extends HomeState {}
+

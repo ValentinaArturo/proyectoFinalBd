@@ -1,5 +1,5 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:proyecto_final_bd/login/login_page.dart';
 import 'package:proyecto_final_bd/routes/landing_routes.dart';
 import 'package:proyecto_final_bd/routes/landing_routes_constants.dart';
 
@@ -14,6 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      scrollBehavior: MyCustomScrollBehavior(),
       title: 'Proyecto final',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(),
@@ -35,4 +36,13 @@ class HomePage extends StatelessWidget {
       body: child,
     );
   }
+}
+
+class MyCustomScrollBehavior extends MaterialScrollBehavior {
+  // Override behavior methods and getters like dragDevices
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+      };
 }

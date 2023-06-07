@@ -8,7 +8,6 @@ import 'package:proyecto_final_bd/home/bloc/home_event.dart';
 import 'package:proyecto_final_bd/home/bloc/home_state.dart';
 
 class HomeBodyMobile extends StatefulWidget {
-
   const HomeBodyMobile({
     Key? key,
   }) : super(key: key);
@@ -25,6 +24,15 @@ class _HomeBodyMobileState extends State<HomeBodyMobile> with ErrorHandling {
   bool isOpen = false;
   late HomeBloc _homeBloc;
   List<dynamic> json = [];
+  Map<String, dynamic> tables = {};
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<HomeBloc>().add(
+          TableList(),
+        );
+  }
 
   @override
   void didChangeDependencies() {
@@ -61,66 +69,40 @@ class _HomeBodyMobileState extends State<HomeBodyMobile> with ErrorHandling {
               children: [
                 isOpen
                     ? Drawer(
-                        backgroundColor: Colors.transparent,
-                        child: ListView(
-                          children: [
-                            Container(
-                              alignment: Alignment.topRight,
-                              child: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    isOpen = false;
-                                  });
-                                },
-                                child: const Icon(
-                                  Icons.close,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                            const ExpansionTile(
+                        backgroundColor: Colors.indigo.withOpacity(0.7),
+                        child: ListView.builder(
+                          itemCount: tables.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            List<String> tags = tables.keys.toList();
+                            String currentTag = tags[index];
+                            List<dynamic> value = tables[currentTag];
+                            List<String> stringList = value
+                                .map((element) => element.toString())
+                                .toList();
+                            List<Widget> valueWidgets = stringList
+                                .map(
+                                  (item) => Text(
+                                    item,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                )
+                                .toList();
+                            return ExpansionTile(
                               title: Text(
-                                "Tabla 1",
-                                style: TextStyle(
+                                currentTag,
+                                style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 20,
                                 ),
                               ),
-                              children: <Widget>[
-                                Text("children 1"),
-                                Text("children 2")
-                              ],
-                            ),
-                            const ExpansionTile(
-                              title: Text(
-                                "Tabla 2",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                ),
-                              ),
-                              children: <Widget>[
-                                Text("children 1"),
-                                Text("children 2")
-                              ],
-                            ),
-                            const ExpansionTile(
-                              title: Text(
-                                "Tabla 3",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                ),
-                              ),
-                              children: <Widget>[
-                                Text("children 1"),
-                                Text("children 2")
-                              ],
-                            )
-                          ],
+                              children: valueWidgets,
+                            );
+                          },
                         ),
                       )
                     : GestureDetector(
@@ -179,8 +161,10 @@ class _HomeBodyMobileState extends State<HomeBodyMobile> with ErrorHandling {
                                 _homeBloc.add(
                                   Result(
                                     query: commandController.text,
-
                                   ),
+                                );
+                                _homeBloc.add(
+                                  TableList(),
                                 );
                               },
                             ),

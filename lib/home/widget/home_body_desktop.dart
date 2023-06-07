@@ -9,7 +9,6 @@ import 'package:proyecto_final_bd/home/bloc/home_event.dart';
 import 'package:proyecto_final_bd/home/bloc/home_state.dart';
 
 class HomeBodyDesktop extends StatefulWidget {
-
   const HomeBodyDesktop({
     Key? key,
   }) : super(key: key);
@@ -25,6 +24,15 @@ class _HomeBodyDesktopState extends State<HomeBodyDesktop> with ErrorHandling {
   TextEditingController commandController = TextEditingController();
   late HomeBloc _homeBloc;
   List<dynamic> json = [];
+  Map<String, dynamic> tables = {};
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<HomeBloc>().add(
+          TableList(),
+        );
+  }
 
   @override
   void didChangeDependencies() {
@@ -45,6 +53,10 @@ class _HomeBodyDesktopState extends State<HomeBodyDesktop> with ErrorHandling {
             json = [];
             json = state.json;
           });
+        } else if (state is TableListSuccess) {
+          setState(() {
+            tables = state.tables;
+          });
         }
       },
       child: Stack(
@@ -59,27 +71,39 @@ class _HomeBodyDesktopState extends State<HomeBodyDesktop> with ErrorHandling {
             child: Row(
               children: [
                 Drawer(
-                  backgroundColor: Colors.transparent,
+                  backgroundColor: Colors.indigo.withOpacity(0.7),
                   child: ListView.builder(
+                    itemCount: tables.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return
+                      List<String> tags = tables.keys.toList();
+                      String currentTag = tags[index];
+                      List<dynamic> value = tables[currentTag];
+                      List<String> stringList =
+                          value.map((element) => element.toString()).toList();
+                      List<Widget> valueWidgets = stringList
+                          .map(
+                            (item) => Text(
+                              item,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                              ),
+                            ),
+                          )
+                          .toList();
+                      return ExpansionTile(
+                        title: Text(
+                          currentTag,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
+                        ),
+                        children: valueWidgets,
+                      );
                     },
-                    // children: const [
-                    //   ExpansionTile(
-                    //     title: Text(
-                    //       "Tabla 1",
-                    //       style: TextStyle(
-                    //         color: Colors.white,
-                    //         fontWeight: FontWeight.bold,
-                    //         fontSize: 20,
-                    //       ),
-                    //     ),
-                    //     children: <Widget>[
-                    //       Text("children 1"),
-                    //       Text("children 2")
-                    //     ],
-                    //   ),
-                    // ],
                   ),
                 ),
                 Column(
@@ -127,6 +151,9 @@ class _HomeBodyDesktopState extends State<HomeBodyDesktop> with ErrorHandling {
                                     query: commandController.text,
                                   ),
                                 );
+                                _homeBloc.add(
+                                  TableList(),
+                                );
                               },
                             ),
                           ),
@@ -157,7 +184,7 @@ class _HomeBodyDesktopState extends State<HomeBodyDesktop> with ErrorHandling {
           ),
           BlocBuilder<HomeBloc, BaseState>(
             builder: (context, state) {
-              if (state is HomeInProgress) {
+              if (state is HomeInProgress || state is TableListInProgress) {
                 return const Center(
                   child: CircularProgressIndicator(
                     color: Colors.indigo,
@@ -187,6 +214,7 @@ class _HomeBodyDesktopState extends State<HomeBodyDesktop> with ErrorHandling {
   ) {
     return JsonTable(
       json,
+      showColumnToggle: true,
       tableHeaderBuilder: (String? header) {
         return Container(
           padding: const EdgeInsets.symmetric(
@@ -202,7 +230,7 @@ class _HomeBodyDesktopState extends State<HomeBodyDesktop> with ErrorHandling {
             textAlign: TextAlign.center,
             style: const TextStyle(
               fontWeight: FontWeight.w700,
-              fontSize: 20.0,
+              fontSize: 18.0,
               color: Colors.white,
             ),
           ),
@@ -226,14 +254,13 @@ class _HomeBodyDesktopState extends State<HomeBodyDesktop> with ErrorHandling {
             value,
             textAlign: TextAlign.center,
             style: TextStyle(
-                fontSize: 18.0,
-                color: Colors.grey[900],
-                fontWeight: FontWeight.bold),
+              fontSize: 14.0,
+              color: Colors.grey[900],
+              fontWeight: FontWeight.bold,
+            ),
           ),
         );
       },
     );
   }
-
-  _getItem(){}
 }

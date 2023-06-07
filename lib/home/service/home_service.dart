@@ -26,4 +26,19 @@ class HomeService {
       },
     );
   }
+
+  Future<Response> getTables({
+    final String? name,
+    final String? password,
+    final String? database,
+  }) {
+    return client.post(
+      tablesPath,
+      data: {
+        "username": name,
+        "password": password,
+        "database": database,
+      },
+    );
+  }
 }
