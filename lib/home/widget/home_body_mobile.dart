@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:json_table/json_table.dart';
 import 'package:proyecto_final_bd/common/animation/fade_animation.dart';
 import 'package:proyecto_final_bd/common/bloc/base_state.dart';
 import 'package:proyecto_final_bd/common/bloc/mixin/error_handling.dart';
@@ -21,7 +22,6 @@ class _HomeBodyMobileState extends State<HomeBodyMobile> with ErrorHandling {
     0xFF1F1A30,
   );
   TextEditingController commandController = TextEditingController();
-  bool isOpen = false;
   late HomeBloc _homeBloc;
   List<dynamic> json = [];
   Map<String, dynamic> tables = {};
@@ -77,257 +77,68 @@ class _HomeBodyMobileState extends State<HomeBodyMobile> with ErrorHandling {
                 fit: BoxFit.fill,
               ),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Column(
               children: [
-                isOpen
-                    ? Drawer(
-                        backgroundColor: Colors.indigo.withOpacity(0.7),
-                        child: ListView.builder(
-                          itemCount: tables.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            List<String> tags = tables.keys.toList();
-                            String currentTag = tags[index];
-                            List<dynamic> value = tables[currentTag];
-                            List<String> stringList = value
-                                .map((element) => element.toString())
-                                .toList();
-                            List<Widget> valueWidgets = stringList
-                                .map(
-                                  (item) => Text(
-                                    item,
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 15,
-                                    ),
-                                  ),
-                                )
-                                .toList();
-                            return ExpansionTile(
-                              title: Text(
-                                currentTag,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                ),
+                FadeAnimation(
+                  delay: 1,
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 0.4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.withOpacity(0.3),
+                    ),
+                    padding: const EdgeInsets.all(
+                      5.0,
+                    ),
+                    child: TextField(
+                      controller: commandController,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.only(
+                          bottom: 10,
+                        ),
+                        enabledBorder: InputBorder.none,
+                        border: InputBorder.none,
+                        hintText: 'Escribe aqui.......',
+                        hintStyle: const TextStyle(
+                          color: Colors.indigo,
+                          fontSize: 25,
+                        ),
+                        suffixIcon: GestureDetector(
+                          child: const Icon(
+                            Icons.flash_on,
+                            color: Colors.indigo,
+                          ),
+                          onTap: () {
+                            setState(() {
+                              json.clear();
+                            });
+                            _homeBloc.add(
+                              Result(
+                                query: commandController.text,
                               ),
-                              children: valueWidgets,
                             );
                           },
                         ),
-                      )
-                    : GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            isOpen = true;
-                          });
-                        },
-                        child: const Icon(
-                          Icons.menu,
-                          color: Colors.white,
-                        ),
                       ),
-                Column(
-                  children: [
-                    FadeAnimation(
-                      delay: 1,
-                      child: Container(
-                        width: isOpen
-                            ? MediaQuery.of(context).size.width * 0.3
-                            : MediaQuery.of(context).size.width * 0.7,
-                        height: MediaQuery.of(context).size.height * 0.4,
-                        decoration: BoxDecoration(
-                          color: Colors.grey.withOpacity(0.3),
-                        ),
-                        padding: const EdgeInsets.all(
-                          5.0,
-                        ),
-                        child: TextField(
-                          controller: commandController,
-                          keyboardType: TextInputType.multiline,
-                          maxLines: null,
-                          decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.only(
-                              bottom: 10,
-                            ),
-                            enabledBorder: InputBorder.none,
-                            border: InputBorder.none,
-                            hintText: 'Escribe aqui.......',
-                            hintStyle: const TextStyle(
-                              color: Colors.indigo,
-                              fontSize: 25,
-                            ),
-                            suffixIcon: GestureDetector(
-                              child: const Icon(
-                                Icons.flash_on,
-                                color: Colors.indigo,
-                              ),
-                              onTap: () {
-                                setState(() {
-                                  json.clear();
-                                });
-                                _homeBloc.add(
-                                  Result(
-                                    query: commandController.text,
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 25,
-                          ),
-                        ),
+                      style: const TextStyle(
+                        color: Colors.indigo,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 25,
                       ),
                     ),
-                    FadeAnimation(
-                      delay: 1,
-                      child: Container(
-                        width: isOpen
-                            ? MediaQuery.of(context).size.width * 0.3
-                            : MediaQuery.of(context).size.width * 0.7,
-                        height: MediaQuery.of(context).size.height * 0.4,
-                        padding: const EdgeInsets.all(
-                          5.0,
-                        ),
-                        child: isOpen
-                            ? Container()
-                            : DataTable(
-                                columns: const <DataColumn>[
-                                  DataColumn(
-                                    label: Expanded(
-                                      child: Text(
-                                        'Name',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: Expanded(
-                                      child: Text(
-                                        'Age',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: Expanded(
-                                      child: Text(
-                                        'Role',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                                rows: const <DataRow>[
-                                  DataRow(
-                                    cells: <DataCell>[
-                                      DataCell(
-                                        Text(
-                                          'Sarah',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w200,
-                                            fontSize: 20,
-                                          ),
-                                        ),
-                                      ),
-                                      DataCell(Text(
-                                        '19',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w200,
-                                          fontSize: 20,
-                                        ),
-                                      )),
-                                      DataCell(Text(
-                                        'Student',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w200,
-                                          fontSize: 20,
-                                        ),
-                                      )),
-                                    ],
-                                  ),
-                                  DataRow(
-                                    cells: <DataCell>[
-                                      DataCell(Text(
-                                        'Janine',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w200,
-                                          fontSize: 20,
-                                        ),
-                                      )),
-                                      DataCell(Text(
-                                        '43',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w200,
-                                          fontSize: 20,
-                                        ),
-                                      )),
-                                      DataCell(Text(
-                                        'Professor',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w200,
-                                          fontSize: 20,
-                                        ),
-                                      )),
-                                    ],
-                                  ),
-                                  DataRow(
-                                    cells: <DataCell>[
-                                      DataCell(Text(
-                                        'William',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w200,
-                                          fontSize: 20,
-                                        ),
-                                      )),
-                                      DataCell(Text(
-                                        '27',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w200,
-                                          fontSize: 20,
-                                        ),
-                                      )),
-                                      DataCell(Text(
-                                        'Associate Professor',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w200,
-                                          fontSize: 20,
-                                        ),
-                                      )),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                      ),
+                  ),
+                ),
+                FadeAnimation(
+                  delay: 1,
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 0.5,
+                    color: Colors.white.withOpacity(0.7),
+                    padding: const EdgeInsets.all(
+                      5.0,
                     ),
-                  ],
+                    child: json.isEmpty ? Container() : _jsonTable(json),
+                  ),
                 ),
               ],
             ),
@@ -353,6 +164,61 @@ class _HomeBodyMobileState extends State<HomeBodyMobile> with ErrorHandling {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _jsonTable(
+    var json,
+  ) {
+    return JsonTable(
+      json,
+      showColumnToggle: true,
+      tableHeaderBuilder: (String? header) {
+        return Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 8.0,
+            vertical: 4.0,
+          ),
+          decoration: BoxDecoration(
+            border: Border.all(width: 0.5),
+            color: Colors.indigo[900],
+          ),
+          child: Text(
+            header!,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontWeight: FontWeight.w700,
+              fontSize: 18.0,
+              color: Colors.white,
+            ),
+          ),
+        );
+      },
+      tableCellBuilder: (value) {
+        return Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 4.0,
+            vertical: 2.0,
+          ),
+          decoration: BoxDecoration(
+            border: Border.all(
+              width: 0.5,
+              color: Colors.grey.withOpacity(
+                0.5,
+              ),
+            ),
+          ),
+          child: Text(
+            value,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 14.0,
+              color: Colors.grey[900],
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        );
+      },
     );
   }
 }
