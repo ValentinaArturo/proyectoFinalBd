@@ -13,9 +13,11 @@ class HomeInProgress extends HomeState {}
 
 class HomeSuccess extends HomeState {
   final List<dynamic> json;
+  final String message;
 
   const HomeSuccess(
     this.json,
+    this.message,
   );
 }
 
@@ -28,12 +30,11 @@ class HomeError extends HomeState {
 }
 
 class TableListSuccess extends HomeState {
-  final Map<String,dynamic> tables;
+  final Map<String, dynamic> tables;
 
   const TableListSuccess(
-      this.tables,
-      );
+    this.tables,
+  );
 }
 
 class TableListInProgress extends HomeState {}
-

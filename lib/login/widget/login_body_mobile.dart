@@ -53,7 +53,6 @@ class _LoginBodyMobileState extends State<LoginBodyMobile> with ErrorHandling {
           Navigator.pushNamed(
             context,
             homeRoute,
-
           );
         } else if (state is SchemeListSuccess) {
           setState(() {
@@ -183,6 +182,13 @@ class _LoginBodyMobileState extends State<LoginBodyMobile> with ErrorHandling {
                                     });
                                   },
                                   onChanged: (value) {
+                                    if (value.isEmpty) {
+                                      setState(() {
+                                        dropdownValue = 'Selecciona un esquema';
+                                        items.clear();
+                                        items.add('Selecciona un esquema');
+                                      });
+                                    }
                                     _loginBloc.add(
                                       SchemeList(
                                         user: nameController.text,

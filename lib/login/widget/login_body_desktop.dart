@@ -204,6 +204,14 @@ class _LoginBodyDesktopState extends State<LoginBodyDesktop>
                                     });
                                   },
                                   onChanged: (value) {
+                                    if (value.isEmpty) {
+                                      setState(() {
+                                        dropdownValue = 'Selecciona un esquema';
+                                        items.clear();
+                                        items.add('Selecciona un esquema');
+                                      });
+
+                                    }
                                     _loginBloc.add(
                                       SchemeList(
                                         user: nameController.text,
@@ -350,48 +358,47 @@ class _LoginBodyDesktopState extends State<LoginBodyDesktop>
                             const SizedBox(
                               height: 20,
                             ),
-
-                              FadeAnimation(
-                                delay: 1,
-                                child: TextButton(
-                                  onPressed: () {
-                                    _loginBloc.add(
-                                      Login(
-                                        user: nameController.text,
-                                        database: dropdownValue!,
-                                        password: passwordController.text,
-                                      ),
-                                    );
-                                    // Navigator.pushNamed(
-                                    //   context,
-                                    //   homeRoute,
-                                    // );
-                                  },
-                                  style: TextButton.styleFrom(
-                                    backgroundColor: const Color(
-                                      0xFF2697FF,
+                            FadeAnimation(
+                              delay: 1,
+                              child: TextButton(
+                                onPressed: () {
+                                  _loginBloc.add(
+                                    Login(
+                                      user: nameController.text,
+                                      database: dropdownValue!,
+                                      password: passwordController.text,
                                     ),
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 14.0,
-                                      horizontal: 80,
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(
-                                        12.0,
-                                      ),
-                                    ),
+                                  );
+                                  // Navigator.pushNamed(
+                                  //   context,
+                                  //   homeRoute,
+                                  // );
+                                },
+                                style: TextButton.styleFrom(
+                                  backgroundColor: const Color(
+                                    0xFF2697FF,
                                   ),
-                                  child: const Text(
-                                    "Login",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      letterSpacing: 0.5,
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold,
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 14.0,
+                                    horizontal: 80,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(
+                                      12.0,
                                     ),
                                   ),
                                 ),
+                                child: const Text(
+                                  "Login",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    letterSpacing: 0.5,
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
+                            ),
                           ],
                         ),
                       ),

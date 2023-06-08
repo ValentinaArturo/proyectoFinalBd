@@ -52,6 +52,7 @@ class HomeBloc extends BaseBloc<HomeEvent, BaseState> {
         emit(
           HomeSuccess(
             response.data['results'],
+            response.data['msg']
           ),
         );
       } else {
@@ -88,7 +89,7 @@ class HomeBloc extends BaseBloc<HomeEvent, BaseState> {
       );
 
       final jsonString = jsonEncode(response.data);
-      Map<String, dynamic> jsonMap = jsonDecode(jsonString);
+      Map<String, dynamic> jsonMap = jsonString == '[]'?{}:jsonDecode(jsonString);
       emit(
         TableListSuccess(
           jsonMap,

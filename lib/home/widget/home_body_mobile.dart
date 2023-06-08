@@ -50,8 +50,22 @@ class _HomeBodyMobileState extends State<HomeBodyMobile> with ErrorHandling {
         verifyServerError(state);
         if (state is HomeSuccess) {
           setState(() {
+            json = [];
             json = state.json;
           });
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.green,
+                content: Text(
+                  state.message,
+                ),
+              ),
+            );
+          });
+          _homeBloc.add(
+            TableList(),
+          );
         }
       },
       child: Stack(
@@ -126,9 +140,6 @@ class _HomeBodyMobileState extends State<HomeBodyMobile> with ErrorHandling {
                             : MediaQuery.of(context).size.width * 0.7,
                         height: MediaQuery.of(context).size.height * 0.4,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(
-                            20.0,
-                          ),
                           color: Colors.grey.withOpacity(0.3),
                         ),
                         padding: const EdgeInsets.all(
@@ -162,9 +173,6 @@ class _HomeBodyMobileState extends State<HomeBodyMobile> with ErrorHandling {
                                   Result(
                                     query: commandController.text,
                                   ),
-                                );
-                                _homeBloc.add(
-                                  TableList(),
                                 );
                               },
                             ),
@@ -332,6 +340,7 @@ class _HomeBodyMobileState extends State<HomeBodyMobile> with ErrorHandling {
                 WidgetsBinding.instance.addPostFrameCallback(
                   (_) => ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
+                      backgroundColor: Colors.red,
                       content: Text(
                         state.error,
                       ),

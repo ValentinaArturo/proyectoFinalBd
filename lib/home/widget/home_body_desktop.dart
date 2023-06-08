@@ -53,6 +53,19 @@ class _HomeBodyDesktopState extends State<HomeBodyDesktop> with ErrorHandling {
             json = [];
             json = state.json;
           });
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.green,
+                content: Text(
+                  state.message,
+                ),
+              ),
+            );
+          });
+          _homeBloc.add(
+            TableList(),
+          );
         } else if (state is TableListSuccess) {
           setState(() {
             tables = state.tables;
@@ -72,39 +85,42 @@ class _HomeBodyDesktopState extends State<HomeBodyDesktop> with ErrorHandling {
               children: [
                 Drawer(
                   backgroundColor: Colors.indigo.withOpacity(0.7),
-                  child: ListView.builder(
-                    itemCount: tables.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      List<String> tags = tables.keys.toList();
-                      String currentTag = tags[index];
-                      List<dynamic> value = tables[currentTag];
-                      List<String> stringList =
-                          value.map((element) => element.toString()).toList();
-                      List<Widget> valueWidgets = stringList
-                          .map(
-                            (item) => Text(
-                              item,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15,
+                  child: tables.isEmpty
+                      ? Container()
+                      : ListView.builder(
+                          itemCount: tables.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            List<String> tags = tables.keys.toList();
+                            String currentTag = tags[index];
+                            List<dynamic> value = tables[currentTag];
+                            List<String> stringList = value
+                                .map((element) => element.toString())
+                                .toList();
+                            List<Widget> valueWidgets = stringList
+                                .map(
+                                  (item) => Text(
+                                    item,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                )
+                                .toList();
+                            return ExpansionTile(
+                              title: Text(
+                                currentTag,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                ),
                               ),
-                            ),
-                          )
-                          .toList();
-                      return ExpansionTile(
-                        title: Text(
-                          currentTag,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                          ),
+                              children: valueWidgets,
+                            );
+                          },
                         ),
-                        children: valueWidgets,
-                      );
-                    },
-                  ),
                 ),
                 Column(
                   children: [
@@ -112,11 +128,8 @@ class _HomeBodyDesktopState extends State<HomeBodyDesktop> with ErrorHandling {
                       delay: 1,
                       child: Container(
                         width: MediaQuery.of(context).size.width * 0.7,
-                        height: MediaQuery.of(context).size.height * 0.4,
+                        height: MediaQuery.of(context).size.height * 0.38,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(
-                            20.0,
-                          ),
                           color: Colors.grey.withOpacity(0.3),
                         ),
                         padding: const EdgeInsets.all(
@@ -127,8 +140,8 @@ class _HomeBodyDesktopState extends State<HomeBodyDesktop> with ErrorHandling {
                           keyboardType: TextInputType.multiline,
                           maxLines: null,
                           decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.only(
-                              bottom: 10,
+                            contentPadding: const EdgeInsets.all(
+                              10,
                             ),
                             enabledBorder: InputBorder.none,
                             border: InputBorder.none,
@@ -151,9 +164,6 @@ class _HomeBodyDesktopState extends State<HomeBodyDesktop> with ErrorHandling {
                                     query: commandController.text,
                                   ),
                                 );
-                                _homeBloc.add(
-                                  TableList(),
-                                );
                               },
                             ),
                           ),
@@ -169,7 +179,7 @@ class _HomeBodyDesktopState extends State<HomeBodyDesktop> with ErrorHandling {
                       delay: 1,
                       child: Container(
                         width: MediaQuery.of(context).size.width * 0.7,
-                        height: MediaQuery.of(context).size.height * 0.6,
+                        height: MediaQuery.of(context).size.height * 0.5,
                         color: Colors.white.withOpacity(0.7),
                         padding: const EdgeInsets.all(
                           5.0,
@@ -194,6 +204,7 @@ class _HomeBodyDesktopState extends State<HomeBodyDesktop> with ErrorHandling {
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
+                      backgroundColor: Colors.red,
                       content: Text(
                         state.error,
                       ),
